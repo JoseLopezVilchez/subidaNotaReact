@@ -1,22 +1,38 @@
+//asegura que los props del componente son de un tipo concreto
 import { PropTypes } from "prop-types";
+
+//componentes de la libreria weather-icons. Solo la uso para iconos y ya
 import { WiWindBeaufort0, WiWindBeaufort1, WiWindBeaufort10, WiWindBeaufort11, WiWindBeaufort12, WiWindBeaufort2, WiWindBeaufort3, WiWindBeaufort4, WiWindBeaufort5, WiWindBeaufort6, WiWindBeaufort7, WiWindBeaufort8, WiWindBeaufort9 } from "weather-icons-react"
+
+//libreria color.js para sacar distintos colores. La uso para seleccionar dinamicamente colores de un gradiente
 import Color from "../../node_modules/colorjs.io/src/index.js";
 
+//creo un prop metiendolo entre llaves
 function VelocidadViento({ velocidad }) {
+
+    //lanzo error si el prop introducido mas adelante no es del tipo deseado
     if (typeof velocidad !== 'number') {
         throw new Error('La prop velocidad debe ser un número');
     }
 
+    //creacion de objetos Color con la libreria color.js.
     const colorInicial = new Color('#28B463')
     const colorFinal = new Color('#E74C3C')
+
+    //creacion de gradiente con los colores anteriores, del cual podre sacar colores intermedios mas adelante
     const interpolacion = colorInicial.range(colorFinal , {space: "lch"})
 
+    //variable donde almacenare el icono deseado para mostrar visualmente el viento en forma de componente
     let beaufort
+
+    //props que introducire en los componentes del icono
     let props = {
         size : 90,
+        //funcion para sacar el color que introducire en el icono
         color : interpolacion(velocidad/120)
     }   
 
+    //segun la velocidad, cambia el icono a usar
     switch (true) {
         case (velocidad > 117):
             beaufort = <WiWindBeaufort12 {...props} />
@@ -59,6 +75,7 @@ function VelocidadViento({ velocidad }) {
             break
     }
 
+    //componente que devuelve. Inserta el icono seleccionado en el switch en 'beaufort', y saca la velocidad del prop directamente
     return (
       <div className="flex justify-center w-fit max-w-sm dark:text-white p-2 pr-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-slate-900 dark:border-gray-700">
         {beaufort}
@@ -70,8 +87,10 @@ function VelocidadViento({ velocidad }) {
     )
 }
 
+//comprobacion de tipo del prop usando la libreria de proptypes
 VelocidadViento.propTypes = {
     velocidad : PropTypes.number.isRequired
 }
 
+//exportacion del componente
 export default VelocidadViento
